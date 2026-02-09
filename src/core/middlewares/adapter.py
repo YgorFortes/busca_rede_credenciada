@@ -1,0 +1,3 @@
+from core.middlewares.exception_handle_middleware import GlobalExceptionHandler
+
+

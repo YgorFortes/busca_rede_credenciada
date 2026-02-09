@@ -1,0 +1,33 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "6565:8000"
+    volumes:
+      - ./:/app
+      - ./logs:/app/logs
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - LANG=pt_BR.UTF-8
+      - LANGUAGE=pt_BR:pt
+      - LC_ALL=pt_BR.UTF-8
+      - REDIS_URL=redis://redis:6379/1
+      - DJANGO_ENV=local
+      - DJANGO_DEBUG_LOCAL=True
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: > 
+      gunicorn setup.wsgi:application --bind 0.0.0.0:8000 --workers 4 --worker-class gevent --timeout 3600 --max-requests 1000 --max-requests-jitter 50 --access-logfile -
+
+    deploy:
+      resources:
+        limits:
+           cpus: '2.0'
+           memory: 4096M
+        # reservations:
+        #     cpus: '2.0'
+        #     memory: 4096M
+
