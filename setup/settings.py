@@ -31,12 +31,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-# Usando user personalidado 
-AUTH_USER_MODEL = 'users.Usuario'
 
-
-
-# Application definition
 
 DJANGO_APPS = [
     "django.contrib.admin",
@@ -49,8 +44,6 @@ DJANGO_APPS = [
 
 LOCAL_APPS = [
     'apps.users.apps.UsersConfig',
-    "apps.logs.apps.AuditConfig",
-    "apps.dash.apps.DashConfig",
 ]
 
 THIRD_PARTY_APPS = [
@@ -65,8 +58,6 @@ INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
-    "core.middlewares.token_authentication_middleware.JWTAuthenticationMiddleware",
-    "core.middlewares.audit_middleware.AuditDBMiddleware",
     "core.middlewares.exception_handle_middleware.GlobalExceptionMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -162,7 +153,6 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'Documentação dos endpoints de autenticação e gestão de dashboards.',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
-    # Isso adiciona o botão "Authorize" no Swagger para o seu Bearer Token
     'COMPONENT_SPLIT_PATCH': True,
     'COMPONENT_NO_READ_ONLY_REQUIRED': True,
     'SECURITY': [
@@ -171,8 +161,8 @@ SPECTACULAR_SETTINGS = {
     'APPEND_COMPONENTS': {
         "securitySchemes": {
         'jwtAuth': {
-            'type': 'http',      # Muda de apiKey para http
-            'scheme': 'bearer',  # Define que o esquema é do tipo bearer
+            'type': 'http',      
+            'scheme': 'bearer', 
             'bearerFormat': 'JWT',
             'description': 'Insira apenas o seu token JWT (o código grande).'
             }
@@ -185,12 +175,9 @@ SPECTACULAR_SETTINGS = {
 # Configurando o erros globais do middleare
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'apps.users.service.token_authentication.JWTAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated', # Isso bloqueia AnonymousUser automaticamente
-    ),
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     'rest_framework.permissions.IsAuthenticated', # Isso bloqueia AnonymousUser automaticamente
+    # ),
     'DEFAULT_RENDERER_CLASSES': (
         'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
         'djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer',
@@ -200,7 +187,6 @@ REST_FRAMEWORK = {
         'djangorestframework_camel_case.parser.CamelCaseFormParser',
         'djangorestframework_camel_case.parser.CamelCaseMultiPartParser',
         'djangorestframework_camel_case.parser.CamelCaseJSONParser',
-        # ... outras classes de parser
     ),
 }
 
